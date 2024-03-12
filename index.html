@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Audio Generation Paper Demo</title>
+</head>
+<body>
+    <h1>Audio Generation Paper Demo</h1>
+    <form id="audioForm" enctype="multipart/form-data">
+        <label for="audioFile">Select Audio File:</label>
+        <input type="file" id="audioFile" accept="audio/*" required>
+        <br>
+        <button type="submit">Upload File</button>
+    </form>
+
+    <hr>
+
+    <div id="audioPlayer"></div>
+
+    <script>
+        document.getElementById('audioForm').addEventListener('submit', function(event) {
+            event.preventDefault(); // Prevent the form from submitting normally
+            
+            var formData = new FormData(this);
+
+            fetch('/upload', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                // Assuming server responds with audio URL
+                displayAudio(data.audioURL);
+            })
+            .catch(error => console.error('Error:', error));
+        });
+
+        function displayAudio(audioURL) {
+            var audioPlayer = document.getElementById('audioPlayer');
+            audioPlayer.innerHTML = ''; // Clear previous audio if any
+
+            var audioElement = document.createElement('audio');
+            audioElement.controls = true;
+            audioElement.src = audioURL;
+
+            audioPlayer.appendChild(audioElement);
+        }
+    </script>
+</body>
+</html>
